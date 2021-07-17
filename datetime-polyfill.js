@@ -31,8 +31,15 @@
         const self = this;
 
         this.init = function() {
-            const replacedInputs = this.replaceInputs();
-            this.setFormEvents(replacedInputs);
+            this.onReady(this.replaceInputs.bind(this));
+        };
+
+        this.onReady = function(cb) {
+            if (document.readyState !== 'loading') {
+                cb();
+            } else {
+                document.addEventListener('DOMContentLoaded', cb);
+            }
         };
 
         this.replaceInputs = function() {
@@ -66,6 +73,7 @@
                     onChangeFunc(input, inpDate, inpTime);
                 });
                 inpDate.setAttribute('name', 'polyfill_' + input.name);
+                inpDate.setAttribute('form', 'fake');
 
                 const inpTime = self.createInput('time', input.className, {
                     width: '40%',
@@ -79,6 +87,7 @@
                     onChangeFunc(input, inpDate, inpTime);
                 });
                 inpTime.setAttribute('name', 'polyfill_' + input.name);
+                inpTime.setAttribute('form', 'fake');
 
                 input.parentNode.appendChild(inpDate);
                 input.parentNode.appendChild(inpTime);
@@ -104,15 +113,6 @@
                 inp.onchange = onChange.bind(inp);
             }
             return inp;
-        };
-
-        this.setFormEvents = function(inputs) {
-            if (inputs.length === 0) {
-                return;
-            }
-
-            console.log('setFormEvents', inputs);
-
         };
 
         this.css = function (el, styles) {
