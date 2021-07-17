@@ -61,6 +61,7 @@
                     return;
                 }
                 input.type = 'hidden';
+                const values = self.parseValue(input.value);
                 const inpDate = self.createInput('date', input.className, {
                     width: '60%',
                     boxSizing: 'border-box',
@@ -74,6 +75,9 @@
                 });
                 inpDate.setAttribute('name', 'polyfill_' + input.name);
                 inpDate.setAttribute('form', 'fake');
+                if (values.length === 2) {
+                    inpDate.value = values[0];
+                }
 
                 const inpTime = self.createInput('time', input.className, {
                     width: '40%',
@@ -88,6 +92,9 @@
                 });
                 inpTime.setAttribute('name', 'polyfill_' + input.name);
                 inpTime.setAttribute('form', 'fake');
+                if (values.length === 2) {
+                    inpTime.value = values[1];
+                }
 
                 input.parentNode.appendChild(inpDate);
                 input.parentNode.appendChild(inpTime);
@@ -113,6 +120,12 @@
                 inp.onchange = onChange.bind(inp);
             }
             return inp;
+        };
+
+        this.parseValue = function(value) {
+            return value && /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)
+                ? value.split('T')
+                : [];
         };
 
         this.css = function (el, styles) {
